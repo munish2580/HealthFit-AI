@@ -2,9 +2,15 @@ import os
 import pickle
 import time
 from datetime import datetime, timedelta
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+try:
+    from googleapiclient.discovery import build
+    from google_auth_oauthlib.flow import InstalledAppFlow
+    from google.auth.transport.requests import Request
+except ImportError:
+    build = None
+    InstalledAppFlow = None
+    Request = None
+
 
 # Scopes needed to read activity (steps) and body (heart rate)
 SCOPES = [

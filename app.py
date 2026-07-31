@@ -207,54 +207,67 @@ def index():
 
 @app.route('/dashboard')
 def dashboard():
-    # Latest report fetch karna
-    cursor.execute("SELECT * FROM medical_reports ORDER BY id DESC LIMIT 1")
-    report_data = cursor.fetchone()
-    
-    # Graphs ke liye Smartwatch data
-    cursor.execute("SELECT * FROM smartwatch_vitals ORDER BY id DESC LIMIT 15")
-    vitals = cursor.fetchall()
-    
-    # AI Summary string ko JSON mein wapas convert karna
-    ai_plan = None
-    if report_data:
-        ai_plan = json.loads(report_data['ai_summary'])
+    try:
+        # Latest report fetch karna
+        cursor.execute("SELECT * FROM medical_reports ORDER BY id DESC LIMIT 1")
+        report_data = cursor.fetchone()
+        
+        # Graphs ke liye Smartwatch data
+        cursor.execute("SELECT * FROM smartwatch_vitals ORDER BY id DESC LIMIT 15")
+        vitals = cursor.fetchall()
+        
+        # AI Summary string ko JSON mein wapas convert karna
+        ai_plan = None
+        if report_data and report_data.get('ai_summary'):
+            try:
+                summary = report_data['ai_summary']
+                ai_plan = summary if isinstance(summary, dict) else json.loads(summary)
+            except Exception as json_err:
+                print(f"JSON decode error: {json_err}")
+                ai_plan = None
 
-    chart_data = {
-        "labels": [v['id'] for v in reversed(vitals)],
-        "hr": [v['heart_rate'] for v in reversed(vitals)],
-        "steps": [v['steps'] for v in reversed(vitals)]
-    }
+        chart_data = {
+            "labels": [v['id'] for v in reversed(vitals)] if vitals else [],
+            "hr": [v['heart_rate'] for v in reversed(vitals)] if vitals else [],
+            "steps": [v['steps'] for v in reversed(vitals)] if vitals else []
+        }
 
-    return render_template('dashboard.html', ai_plan=ai_plan, chart_data=chart_data)
+        return render_template('dashboard.html', ai_plan=ai_plan, chart_data=chart_data)
+    except Exception as e:
+        print(f"Dashboard error: {e}")
+        return render_template('dashboard.html', ai_plan=None, chart_data={"labels": [], "hr": [], "steps": []})
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        file = request.files.get('file')
-        if file:
-            path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            file.save(path)
-            
-            # Load the image to pass directly to Gemini Vision
-            img = Image.open(path)
-            
-            # AI Doctor Logic -> Image is directly analyzed, no Tesseract needed.
-            ai_result = get_ai_doctor_response(img, "medical report image")
-            
-            if isinstance(ai_result, dict):
-                # "extracted_text" is no longer relevant, saving a marker instead
-                cursor.execute("INSERT INTO medical_reports (user_name, extracted_text, ai_summary) VALUES (%s, %s, %s)",
-                               ("Patient", "Direct Vision Analysis", json.dumps(ai_result)))
-                db.commit()
-                # Redirect to dashboard to see results
-                from flask import redirect, url_for
-                return redirect(url_for('dashboard'))
+        try:
+            file = request.files.get('file')
+            if file and file.filename:
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+                file.save(path)
+                
+                # Load the image to pass directly to Gemini Vision
+                img = Image.open(path)
+                
+                # AI Doctor Logic -> Image is directly analyzed, no Tesseract needed.
+                ai_result = get_ai_doctor_response(img, "medical report image")
+                
+                if isinstance(ai_result, dict):
+                    cursor.execute("INSERT INTO medical_reports (user_name, extracted_text, ai_summary) VALUES (%s, %s, %s)",
+                                   ("Patient", "Direct Vision Analysis", json.dumps(ai_result)))
+                    db.commit()
+                    from flask import redirect, url_for
+                    return redirect(url_for('dashboard'))
+                else:
+                    error_msg = "Google API Limit Exceeded (429). Please wait 1 minute and try again." if "429" in str(ai_result) else f"Error: {ai_result}"
+                    return render_template('upload.html', error=error_msg)
             else:
-                error_msg = "Google API Limit Exceeded (429). Please wait 1 minute and try again." if "429" in str(ai_result) else f"Error: {ai_result}"
-                return render_template('upload.html', error=error_msg)
+                return render_template('upload.html', error="Please select a valid medical report file to upload.")
+        except Exception as e:
+            print(f"Upload error: {e}")
+            return render_template('upload.html', error=f"Upload processing error: {e}")
               
-    # Agar sirf link open kiya hai (GET method), toh upload form dikhao
     return render_template('upload.html')
 
 @app.route('/daily-track')

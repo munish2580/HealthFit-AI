@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthFit Clinic - Patient Consultant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+        }
+        .message-bubble {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
+        @keyframes fadeIn { to { opacity: 1; } }
+    </style>
+
+    </head>
+
+<body class="flex min-h-screen overflow-hidden">
+
+    <!-- Sidebar (Dark Theme to match) -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex-col hidden md:flex h-screen fixed left-0 top-0 z-10">
+        <div class="px-6 py-8 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <h1 class="text-xl font-bold tracking-tight text-white">HealthFit<span class="text-blue-500 font-light">Clinic</span></h1>
+            </div>
+        </div>
+        
+        <nav class="flex-1 px-4 py-8 space-y-2">
+            <h3 class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Core Medical</h3>
+            <a href="/dashboard" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Patient Overview
+            </a>
+            <a href="/daily-track" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                IoT Analytics
+            </a>
+            <a href="/doctor-chat" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                Patient Consultant
+            </a>
+            
+            <a href="/risk-predictor" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition mt-8">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                Risk Predictor
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-0 md:ml-64 relative flex flex-col h-screen">
+        <!-- Background Elements -->
+        <div class="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] left-[10%] w-[30rem] h-[30rem] bg-indigo-600/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+        <!-- Chat Container -->
+        <div class="flex-1 flex flex-col max-w-5xl mx-auto w-full p-6 relative z-10 h-full">
+            
+            <!-- Header -->
+            <header class="mb-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
+                        <span class="bg-blue-500/20 text-blue-400 p-2 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        </span>
+                        AI Medical Consultant
+                    </h2>
+                    <p class="text-slate-400 mt-1 ml-12 text-sm">Instant symptom analysis & triage guidance.</p>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    ONLINE
+                </div>
+            </header>
+
+            <!-- Chat Area -->
+            <div class="glass-card flex-1 flex flex-col overflow-hidden shadow-2xl">
+                
+                <!-- Messages List -->
+                <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-6">
+                    
+                    <!-- Consultant Message (Welcome) -->
+                    <div class="flex items-end gap-3 max-w-[80%]">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shrink-0">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 text-slate-200 p-4 rounded-2xl rounded-bl-sm message-bubble text-sm leading-relaxed">
+                            Hello! I am your AI Medical Consultant. What symptoms are you experiencing today? Please describe them clearly so I can assist you.
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-4 border-t border-slate-700/50 bg-slate-900/50">
+                    <form id="chatForm" class="flex gap-3" onsubmit="sendMessage(event)">
+                        <input type="text" id="chatInput" placeholder="Describe your symptoms (e.g., 'I have a headache and mild fever')..." 
+                            class="flex-1 bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition placeholder-slate-500" required>
+                        <button type="submit" id="sendBtn" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-3.5 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center gap-2 transform hover:scale-[1.02]">
+                            Send
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </form>
+                    <p class="text-center text-[10px] text-slate-500 mt-3 font-medium uppercase tracking-widest">
+                        Note: For severe emergencies, please call emergency services immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function sendMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chat-messages');
+            const btn = document.getElementById('sendBtn');
+            const msgText = input.value.trim();
+            if(!msgText) return;
+
+            // User Message
+            messages.innerHTML += `
+                <div class="flex items-end gap-3 justify-end ml-auto max-w-[80%]">
+                    <div class="bg-blue-600 text-white p-4 rounded-2xl rounded-br-sm message-bubble text-sm leading-relaxed">
+                        ${msgText}
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center shadow-md shrink-0 border border-slate-600 text-xs font-bold">
+                        YOU
+                    </div>
+                </div>
+            `;
+            
+            input.value = '';
+            btn.disabled = true;
+            btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+
+            // Typing Indicator
+            const typingId = 'typing-' + Date.now();
+            messages.innerHTML += `
+                <div id="${typingId}" class="flex items-end gap-3 max-w-[80%]">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shrink-0">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 text-slate-400 px-5 py-4 rounded-2xl rounded-bl-sm message-bubble flex gap-1 items-center h-[52px]">
+                        <div class="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+                        <div class="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+                        <div class="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+                    </div>
+                </div>
+            `;
+            messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('message', msgText);
+                
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                document.getElementById(typingId).remove();
+                
+                // Doctor Message
+                messages.innerHTML += `
+                    <div class="flex items-end gap-3 max-w-[80%] opacity-0 transition-opacity duration-500" style="animation: fadeIn 0.5s forwards;">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shrink-0">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 text-slate-200 p-4 rounded-2xl rounded-bl-sm message-bubble text-sm leading-relaxed">
+                            ${data.response}
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById(typingId).remove();
+                messages.innerHTML += `
+                    <div class="flex items-end gap-3 max-w-[80%]">
+                        <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center shadow-lg shrink-0">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <div class="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl rounded-bl-sm message-bubble text-sm">
+                            Failed to connect to consultant. Please try again.
+                        </div>
+                    </div>
+                `;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `Send <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
+            messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+
+</html>

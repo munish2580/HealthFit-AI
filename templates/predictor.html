@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthFit Clinic - ML Risk Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+        .input-glass {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .input-glass:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Gauge Animation */
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 100px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .gauge-arc {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 20px solid #334155;
+            border-bottom-color: transparent;
+            border-right-color: transparent;
+            transform: rotate(-45deg);
+        }
+        .gauge-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 20px solid #ef4444; /* Default Red for High Risk */
+            border-bottom-color: transparent;
+            border-right-color: transparent;
+            transform: rotate(-45deg);
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gauge-fill.low { border-color: #10b981; } /* Green */
+        .gauge-fill.med { border-color: #f59e0b; } /* Yellow */
+        .gauge-fill.high { border-color: #ef4444; } /* Red */
+    </style>
+
+    </head>
+
+<body class="flex min-h-screen">
+
+    <!-- Sidebar (Dark Theme to match) -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex-col hidden md:flex h-screen fixed left-0 top-0 z-10">
+        <div class="px-6 py-8 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <h1 class="text-xl font-bold tracking-tight text-white">HealthFit<span class="text-blue-500 font-light">Clinic</span></h1>
+            </div>
+        </div>
+        
+        <nav class="flex-1 px-4 py-8 space-y-2">
+            <h3 class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Core Medical</h3>
+            <a href="/dashboard" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Patient Overview
+            </a>
+            <a href="/daily-track" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                IoT Analytics
+            </a>
+            <a href="/doctor-chat" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                Patient Consultant
+            </a>
+            
+            <a href="/risk-predictor" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.15)] mt-8">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                Risk Predictor
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-0 md:ml-64 p-8 relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] left-[10%] w-[30rem] h-[30rem] bg-blue-600/20 rounded-full blur-[80px] pointer-events-none"></div>
+
+        <header class="mb-10 relative z-10">
+            <h2 class="text-4xl font-bold text-white mb-2 tracking-tight">Comprehensive Health Predictor</h2>
+            <p class="text-slate-400">Multi-Disease Risk & Vitality Analysis</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+            
+            <!-- Input Form -->
+            <div class="lg:col-span-2 glass-card p-8">
+                <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-700/50">
+                    <h3 class="text-xl font-semibold text-white">Patient Vitals Input</h3>
+                </div>
+
+                <form method="POST" action="/risk-predictor" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Age -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300 block">Patient Age</label>
+                            <input type="number" name="age" required min="1" max="120" placeholder="e.g. 45" class="w-full px-4 py-3 rounded-lg input-glass focus:ring-0">
+                        </div>
+                        <!-- BMI -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300 block">BMI (Body Mass Index)</label>
+                            <input type="number" step="0.1" name="bmi" required min="10" max="50" placeholder="e.g. 22.5" class="w-full px-4 py-3 rounded-lg input-glass focus:ring-0">
+                        </div>
+                        <!-- Blood Pressure -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300 block">Resting BP (mmHg)</label>
+                            <input type="number" name="bp" required min="50" max="250" placeholder="e.g. 130" class="w-full px-4 py-3 rounded-lg input-glass focus:ring-0">
+                        </div>
+                        <!-- Max HR -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300 block">Max Heart Rate</label>
+                            <input type="number" name="max_hr" required min="50" max="250" placeholder="e.g. 150" class="w-full px-4 py-3 rounded-lg input-glass focus:ring-0">
+                        </div>
+                        <!-- Cholesterol -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300 block">Serum Cholesterol</label>
+                            <input type="number" name="cholesterol" required min="100" max="600" placeholder="e.g. 210" class="w-full px-4 py-3 rounded-lg input-glass focus:ring-0">
+                        </div>
+                        <!-- Fasting Blood Sugar -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300 block">Fasting Blood Sugar</label>
+                            <input type="number" name="blood_sugar" required min="50" max="400" placeholder="e.g. 95" class="w-full px-4 py-3 rounded-lg input-glass focus:ring-0">
+                        </div>
+                        <!-- Stress Level -->
+                        <div class="space-y-2 md:col-span-2 lg:col-span-3">
+                            <label class="text-sm font-medium text-slate-300 block">Stress Level (1-10)</label>
+                            <input type="range" name="stress" required min="1" max="10" value="5" class="w-full mt-2 accent-indigo-500">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1"><span>Low</span><span>Moderate</span><span>High</span></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 mt-8 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold rounded-lg shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all transform hover:scale-[1.02]">
+                        Run Predictive Analysis
+                    </button>
+                </form>
+            </div>
+
+            <!-- Result Pane -->
+            <div class="glass-card p-8 flex flex-col items-center justify-center text-center min-h-[400px]">
+                {% if prediction %}
+                    {% if prediction.error %}
+                        <div class="text-red-400 p-4 border border-red-500/30 rounded-lg bg-red-500/10">{{ prediction.error }}</div>
+                    {% else %}
+                        <div class="w-full h-full flex flex-col justify-center">
+                            <!-- Top: Vitality Score -->
+                            <div class="text-center mb-8 pb-8 border-b border-slate-700/50">
+                                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">Overall Vitality Score</h3>
+                                <div class="text-7xl font-black mb-3 tracking-tighter text-transparent bg-clip-text bg-gradient-to-br 
+                                    {% if prediction.vitality.color == 'green' %}from-emerald-400 to-teal-500
+                                    {% elif prediction.vitality.color == 'yellow' %}from-amber-400 to-orange-500
+                                    {% else %}from-red-400 to-rose-500{% endif %} drop-shadow-lg">
+                                    <span class="count-up" data-target="{{ prediction.vitality.score }}">0</span><span class="text-4xl text-slate-500 font-medium">/100</span>
+                                </div>
+                                <div class="inline-block px-4 py-1.5 rounded-full text-sm font-bold tracking-wide bg-slate-800 border shadow-inner
+                                    {% if prediction.vitality.color == 'green' %}border-emerald-500/30 text-emerald-400
+                                    {% elif prediction.vitality.color == 'yellow' %}border-amber-500/30 text-amber-400
+                                    {% else %}border-red-500/30 text-red-400{% endif %}">
+                                    {{ prediction.vitality.label }}
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom: Multi-Risk Bars -->
+                            <div class="space-y-6 w-full px-4">
+                                <!-- Cardiovascular -->
+                                <div>
+                                    <div class="flex justify-between items-end mb-2">
+                                        <div class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-rose-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                                            Cardiovascular Risk
+                                        </div>
+                                        <div class="text-xs font-bold bg-slate-800 px-2 py-1 rounded border border-slate-700
+                                            {% if prediction.heart.color == 'red' %}text-red-400{% elif prediction.heart.color == 'yellow' %}text-amber-400{% else %}text-emerald-400{% endif %}">
+                                            {{ prediction.heart.label }} (<span class="count-up" data-target="{{ prediction.heart.probability }}">0</span>%)
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700/50 shadow-inner">
+                                        <div class="h-3 rounded-full transition-all duration-1000 ease-out w-0 
+                                            {% if prediction.heart.color == 'red' %}bg-gradient-to-r from-red-500 to-rose-600 shadow-[0_0_10px_rgba(244,63,94,0.5)]
+                                            {% elif prediction.heart.color == 'yellow' %}bg-gradient-to-r from-amber-400 to-orange-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]
+                                            {% else %}bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]{% endif %}" 
+                                            style="width: {{ prediction.heart.probability }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Metabolic / Diabetes -->
+                                <div>
+                                    <div class="flex justify-between items-end mb-2">
+                                        <div class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.769 2.156 18 4.828 18h10.343c2.673 0 4.012-3.231 2.122-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.563-.187a1.993 1.993 0 00-.114-.035l1.063-1.063A3 3 0 009 8.172z" clip-rule="evenodd"></path></svg>
+                                            Metabolic (Diabetes) Risk
+                                        </div>
+                                        <div class="text-xs font-bold bg-slate-800 px-2 py-1 rounded border border-slate-700
+                                            {% if prediction.diabetes.color == 'red' %}text-red-400{% elif prediction.diabetes.color == 'yellow' %}text-amber-400{% else %}text-emerald-400{% endif %}">
+                                            {{ prediction.diabetes.label }} (<span class="count-up" data-target="{{ prediction.diabetes.probability }}">0</span>%)
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700/50 shadow-inner">
+                                        <div class="h-3 rounded-full transition-all duration-1000 ease-out delay-300 w-0
+                                            {% if prediction.diabetes.color == 'red' %}bg-gradient-to-r from-red-500 to-rose-600 shadow-[0_0_10px_rgba(244,63,94,0.5)]
+                                            {% elif prediction.diabetes.color == 'yellow' %}bg-gradient-to-r from-amber-400 to-orange-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]
+                                            {% else %}bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]{% endif %}" 
+                                            style="width: {{ prediction.diabetes.probability }}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            // Count up animation
+                            setTimeout(() => {
+                                document.querySelectorAll('.count-up').forEach(el => {
+                                    const target = parseFloat(el.getAttribute('data-target'));
+                                    let current = 0;
+                                    const increment = target / 30; // Faster animation
+                                    const timer = setInterval(() => {
+                                        current += increment;
+                                        if(current >= target) {
+                                            el.innerText = target.toFixed(1);
+                                            clearInterval(timer);
+                                        } else {
+                                            el.innerText = current.toFixed(1);
+                                        }
+                                    }, 30);
+                                });
+                            }, 100);
+                        </script>
+                    {% endif %}
+                {% else %}
+                    <div class="opacity-50">
+                        <svg class="w-16 h-16 mx-auto text-slate-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        <h3 class="text-xl font-medium text-white mb-2">Awaiting Data</h3>
+                        <p class="text-sm text-slate-400 max-w-[200px] mx-auto">Input patient vitals and run analysis to view the machine learning risk prediction.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthFit Clinic - Patient Overview</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="flex text-slate-800 antialiased h-screen overflow-hidden">
+
+    <!-- Sidebar (Original) -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex-col hidden md:flex h-screen flex-shrink-0 z-10">
+        <div class="px-6 py-8 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <h1 class="text-xl font-bold tracking-tight text-white">HealthFit<span class="text-blue-500 font-light">Clinic</span></h1>
+            </div>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto px-4 py-8 space-y-2">
+            <h3 class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Core Medical</h3>
+            <!-- Active Tab -->
+            <a href="/dashboard" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Patient Overview
+            </a>
+            <a href="/daily-track" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                IoT Analytics
+            </a>
+            <a href="/doctor-chat" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                Patient Consultant
+            </a>
+            
+            <a href="/risk-predictor" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition mt-8">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                Risk Predictor
+            </a>
+        </nav>
+        
+        <div class="px-6 py-6 border-t border-slate-800">
+            <a href="/" class="flex justify-center items-center gap-2 w-full px-4 py-2.5 text-sm font-semibold text-slate-900 bg-white rounded-lg shadow-sm hover:bg-slate-100 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                New Upload
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fafc] relative">
+        <!-- Soft Background Elements -->
+        <div class="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-blue-100/50 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] left-[10%] w-[30rem] h-[30rem] bg-indigo-100/50 rounded-full blur-[80px] pointer-events-none"></div>
+
+        <!-- Header -->
+        <header class="px-8 py-8 flex justify-between items-center shrink-0 z-10">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Patient Overview</h2>
+                <p class="text-sm text-slate-500 font-medium mt-1">Reviewing uploaded medical report insights.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="px-4 py-2 bg-white shadow-sm text-emerald-600 text-xs font-bold rounded-full border border-emerald-100 flex items-center gap-2 uppercase tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Active Session
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto px-8 pb-10 z-10">
+            <div class="w-full max-w-[1600px] mx-auto space-y-8">
+
+            {% if ai_plan %}
+                <!-- Tabs -->
+                <div class="flex gap-2 border-b border-slate-200/80 pb-px">
+                    <button onclick="switchTab('analysis')" id="tab-btn-analysis" class="px-6 py-3 font-bold text-sm md:text-base text-blue-600 border-b-2 border-blue-600 transition-colors">Report Analysis</button>
+                    <button onclick="switchTab('routine')" id="tab-btn-routine" class="px-6 py-3 font-semibold text-sm md:text-base text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors">Recommendation Routine</button>
+                </div>
+
+                <!-- TAB 1: REPORT ANALYSIS -->
+                <div id="tab-analysis" class="space-y-8">
+                    
+                    <!-- Status Banner -->
+                    {% if ai_plan.status == 'NORMAL' %}
+                    <div class="glass-panel rounded-2xl p-6 flex items-center gap-5 border-l-4 border-l-emerald-500 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-5">
+                            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div class="bg-emerald-100/80 p-3.5 rounded-full shrink-0 shadow-sm border border-emerald-200">
+                            <svg class="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-xl">Stable Condition</h3>
+                            <p class="text-slate-600 mt-1 text-sm font-medium">Vitals and test results are within normal expected ranges. No immediate risks detected.</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="glass-panel rounded-2xl p-6 flex items-center gap-5 border-l-4 border-l-rose-500 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-5">
+                            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <div class="bg-rose-100/80 p-3.5 rounded-full shrink-0 shadow-sm border border-rose-200">
+                            <svg class="w-7 h-7 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-xl">Attention Recommended</h3>
+                            <p class="text-slate-600 mt-1 text-sm font-medium">Some values in the report are anomalous. Please review the clinical insights below.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- LEFT SIDE: Clinical Observations (Notes) -->
+                        <div class="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col" style="min-height: 600px;">
+                            <div class="p-6 md:p-8 flex-1 flex flex-col">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div class="bg-indigo-50 text-indigo-600 p-3 rounded-xl border border-indigo-100">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-slate-800">Clinical Notes</h3>
+                                </div>
+                                <div class="pl-4 border-l-4 border-indigo-300 flex-1 overflow-y-auto prose prose-slate">
+                                    <div id="ai-diagnosis-content"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT SIDE: Assessment (Top) & Prescriptions (Bottom) -->
+                        <div class="lg:col-span-2 flex flex-col gap-8">
+                            <!-- Diagnostic Summary (Assessment) -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow duration-300 flex-1 flex flex-col">
+                                <div class="p-6 md:p-8 flex-1 flex flex-col">
+                                    <div class="flex items-center gap-4 mb-6">
+                                        <div class="bg-blue-50 text-blue-600 p-3 rounded-xl border border-blue-100">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-slate-800">Health Overview</h3>
+                                    </div>
+                                    <div class="bg-slate-50/70 p-6 rounded-xl border border-slate-100 flex-1 overflow-y-auto prose prose-slate">
+                                        <div id="ai-prediction-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Prescriptions -->
+                            <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 rounded-2xl shadow-lg shadow-blue-500/20 overflow-hidden text-white relative flex-1 flex flex-col">
+                                <!-- abstract shape -->
+                                <div class="absolute top-0 right-0 opacity-10 transform translate-x-4 -translate-y-4">
+                                    <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                </div>
+                                
+                                <div class="p-8 relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8 flex-1">
+                                    <div class="bg-white/10 p-4 rounded-full border border-white/20 shrink-0">
+                                        <svg class="w-10 h-10 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                    </div>
+                                    <div class="flex-1 w-full text-center md:text-left flex flex-col h-full">
+                                        <h3 class="font-bold text-2xl mb-3 tracking-wide text-blue-50">Prescriptions</h3>
+                                        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20 shadow-inner flex-1 overflow-y-auto prose prose-invert max-w-none">
+                                            <div id="ai-medicine-content"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Consultant (Expanded to Bottom Full Width) -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[500px]">
+                        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-base">Report Assistant</h3>
+                                    <p class="text-xs text-emerald-500 font-semibold tracking-wider">ONLINE</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-slate-400">Ask any questions about the report above</span>
+                        </div>
+                        
+                        <div class="flex-1 p-6 overflow-y-auto bg-white/50 space-y-4" id="report-chat-messages">
+                            <div class="flex items-start">
+                                <div class="bg-slate-100 text-slate-700 text-base p-4 rounded-2xl rounded-tl-sm shadow-sm border border-slate-200/50">
+                                    I have analyzed the diagnostic summary and observations. What specific details would you like me to explain?
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 border-t border-slate-100 bg-slate-50">
+                            <form id="reportChatForm" onsubmit="sendReportMessage(event)" class="flex gap-3 relative max-w-4xl mx-auto w-full">
+                                <input type="text" id="reportChatInput" placeholder="Type your question here..." class="flex-1 bg-white border border-slate-200 text-base rounded-full pl-6 pr-14 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-sm" required>
+                                <button type="submit" id="reportSendBtn" class="absolute right-2 top-2 bottom-2 bg-blue-600 text-white px-4 rounded-full hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-2 font-semibold">
+                                    <span class="hidden sm:inline">Send</span>
+                                    <svg class="w-4 h-4 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TAB 2: CARE PLAN (ROUTINE) -->
+                <div id="tab-routine" class="hidden space-y-8">
+                    <!-- Diet Blocks (Vertical Layout like the original) -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-8 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
+                            <div class="bg-orange-100 text-orange-600 p-2.5 rounded-lg">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.506.45l-1.092.712a3 3 0 01-3.327 0l-1.092-.712a3 3 0 00-3.327 0l-1.092.712a3 3 0 01-3.327 0l-1.092-.712a3 3 0 00-3.327 0l-1.092.712a3 3 0 01-3.327 0L2.494 16C2.034 15.699 1.511 15.546 1 15.546v-2.092c.523 0 1.046-.151 1.506-.45l1.092-.712a3 3 0 003.327 0l1.092.712a3 3 0 013.327 0l1.092-.712a3 3 0 003.327 0l1.092.712a3 3 0 013.327 0l1.092-.712a3 3 0 003.327 0l1.092.712c.46.299.983.45 1.506.45v2.092zM12 21v-4m0 0V9a3 3 0 00-3-3H5a3 3 0 00-3 3v8a3 3 0 003 3h4m10-11l-4 4m0 0l-4-4m4 4V3"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Your Nutrition Plan</h3>
+                        </div>
+                        <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {% set phases = [
+                                ('morning', 'Morning Routine', 'border-t-4 border-orange-400 bg-orange-50/30 text-orange-800', 'https://images.unsplash.com/photo-1494390248081-4e521a5940db?w=500&q=80'),
+                                ('afternoon', 'Afternoon Routine', 'border-t-4 border-blue-400 bg-blue-50/30 text-blue-800', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80'),
+                                ('night', 'Evening Routine', 'border-t-4 border-indigo-400 bg-indigo-50/30 text-indigo-800', 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?w=500&q=80')
+                            ] %}
+                            
+                            {% for key, title, style, img in phases %}
+                            {% set diet_item = ai_plan.diet[key] %}
+                            {% set desc = diet_item.desc if diet_item is mapping else diet_item %}
+                            {% set link = diet_item.link if diet_item is mapping else '' %}
+                            
+                            <div class="{{ style }} rounded-b-2xl p-6 flex flex-col gap-6 shadow-sm hover:shadow-lg transition-all duration-300 group">
+                                <div class="w-full h-48 shrink-0 rounded-xl overflow-hidden shadow-sm relative">
+                                    <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10 pointer-events-none"></div>
+                                    <img src="{{ img }}" alt="{{ title }}" class="w-full h-full object-cover border border-white/20 group-hover:scale-110 transition-transform duration-700">
+                                </div>
+                                <div class="flex-1 flex flex-col">
+                                    <h4 class="font-bold text-2xl mb-3 opacity-90">{{ title }}</h4>
+                                    <p class="text-slate-700 text-lg leading-relaxed flex-1">{{ desc }}</p>
+                                </div>
+                                {% if link %}
+                                <a href="{{ link }}" target="_blank" class="w-full flex justify-center items-center gap-2 px-5 py-3 text-sm font-bold text-red-600 bg-white hover:bg-red-50 rounded-lg transition border border-red-100 shadow-sm mt-auto">
+                                    View Recipe
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Activity Block (Full width below Diet) -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-8 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
+                            <div class="bg-emerald-100 text-emerald-600 p-2.5 rounded-lg">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Physical Activity</h3>
+                        </div>
+                        <div class="p-8 flex flex-col md:flex-row gap-12 items-center">
+                            <div class="md:w-1/2 w-full shrink-0 rounded-2xl overflow-hidden shadow-lg border border-slate-100 group relative">
+                                <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10 pointer-events-none"></div>
+                                <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1000&q=80" alt="Exercise" class="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700">
+                            </div>
+                            <div class="flex-1 flex flex-col justify-center">
+                                <h4 class="text-3xl font-bold text-slate-800 mb-4">{{ ai_plan.activity.name }}</h4>
+                                <p class="text-slate-600 text-xl leading-relaxed mb-8">{{ ai_plan.activity.desc }}</p>
+                                
+                                {% if ai_plan.activity.youtube_link %}
+                                <a href="{{ ai_plan.activity.youtube_link }}" target="_blank" class="inline-flex justify-center items-center gap-2 px-6 py-3 text-base font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition shadow-md w-max">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385-8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                                    Watch Video Tutorial
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="flex flex-col items-center justify-center p-20 text-center glass-panel rounded-3xl mt-10">
+                    <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">No Report Data</h3>
+                    <p class="text-slate-500 mb-8 max-w-sm">Upload a medical report document to initialize patient diagnostics and generate your Care Plan.</p>
+                    <a href="/" class="px-8 py-3.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30">Upload Document</a>
+                </div>
+            {% endif %}
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Tabs Logic
+        function switchTab(tabId) {
+            const tabAnalysis = document.getElementById('tab-analysis');
+            const tabRoutine = document.getElementById('tab-routine');
+            const btnAnalysis = document.getElementById('tab-btn-analysis');
+            const btnRoutine = document.getElementById('tab-btn-routine');
+            
+            const activeClass = "px-6 py-3 font-bold text-sm md:text-base text-blue-600 border-b-2 border-blue-600 transition-colors";
+            const inactiveClass = "px-6 py-3 font-semibold text-sm md:text-base text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors";
+
+            if (tabId === 'analysis') {
+                tabAnalysis.classList.remove('hidden');
+                tabRoutine.classList.add('hidden');
+                btnAnalysis.className = activeClass;
+                btnRoutine.className = inactiveClass;
+            } else {
+                tabAnalysis.classList.add('hidden');
+                tabRoutine.classList.remove('hidden');
+                btnAnalysis.className = inactiveClass;
+                btnRoutine.className = activeClass;
+            }
+        }
+
+        async function sendReportMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('reportChatInput');
+            const btn = document.getElementById('reportSendBtn');
+            const messages = document.getElementById('report-chat-messages');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            messages.innerHTML += `
+                <div class="flex items-start justify-end mb-5">
+                    <div class="bg-blue-600 text-white text-base p-4 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%]">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            btn.disabled = true;
+            messages.scrollTop = messages.scrollHeight;
+            
+            try {
+                const response = await fetch('/report-chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await response.json();
+                
+                messages.innerHTML += `
+                    <div class="flex items-start mb-5">
+                        <div class="bg-slate-100 text-slate-700 text-base p-4 rounded-2xl rounded-tl-sm shadow-sm border border-slate-200/50 max-w-[85%] leading-relaxed">
+                            ${data.response}
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                messages.innerHTML += `
+                    <div class="flex items-start mb-5">
+                        <div class="bg-red-50 text-red-600 text-base p-4 rounded-2xl rounded-tl-sm shadow-sm border border-red-100">
+                            Error connecting to service.
+                        </div>
+                    </div>
+                `;
+            }
+            btn.disabled = false;
+            messages.scrollTop = messages.scrollHeight;
+        }
+    </script>
+    
+    {% if ai_plan %}
+    <script id="ai-prediction-data" type="application/json">
+        {{ ai_plan.prediction | tojson | safe }}
+    </script>
+    <script id="ai-diagnosis-data" type="application/json">
+        {{ ai_plan.diagnosis | tojson | safe }}
+    </script>
+    <script id="ai-medicine-data" type="application/json">
+        {{ ai_plan.medicine | tojson | safe }}
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                if (typeof marked !== 'undefined') {
+                    const predData = document.getElementById('ai-prediction-data');
+                    if(predData) document.getElementById('ai-prediction-content').innerHTML = marked.parse(JSON.parse(predData.textContent));
+                    
+                    const diagData = document.getElementById('ai-diagnosis-data');
+                    if(diagData) document.getElementById('ai-diagnosis-content').innerHTML = marked.parse(JSON.parse(diagData.textContent));
+                    
+                    const medData = document.getElementById('ai-medicine-data');
+                    if(medData) document.getElementById('ai-medicine-content').innerHTML = marked.parse(JSON.parse(medData.textContent));
+                }
+            } catch(e) { console.error("Markdown parsing error", e); }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

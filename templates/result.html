@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthFit AI - Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    </head>
+
+<body class="bg-slate-100 py-10 px-4">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-lg p-8">
+            <div class="flex items-center mb-6">
+                <div class="bg-blue-600 text-white p-3 rounded-xl mr-4">
+                    <span class="text-2xl font-bold">AI</span>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800">Medical Insights Summary</h1>
+            </div>
+
+            <div class="prose prose-blue max-w-none text-slate-700 leading-relaxed bg-slate-50 p-6 rounded-2xl border border-blue-100">
+                <p class="whitespace-pre-line">{{ summary }}</p>
+            </div>
+
+            <div class="mt-10 flex flex-col sm:flex-row gap-4">
+                <a href="/upload" class="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition">
+                    Upload Another
+                </a>
+                <a href="/" class="flex-1 text-center bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold py-3 px-6 rounded-xl transition">
+                    Home
+                </a>
+            </div>
+        </div>
+        
+        <p class="text-center text-slate-400 text-sm mt-8">Disclaimer: AI results are for informational purposes only. Consult a doctor.</p>
+    </div>
+
+</body>
+
+</html>

@@ -18,10 +18,15 @@ UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER): os.makedirs(UPLOAD_FOLDER)
 
-load_dotenv(override=True)
-API_KEY = os.getenv("GEMINI_API_KEY")
-if API_KEY:
-    genai.configure(api_key=API_KEY)
+def init_gemini():
+    load_dotenv(override=True)
+    raw_key = os.getenv("GEMINI_API_KEY", "") or ""
+    clean_key = raw_key.strip().strip("'").strip('"').replace('\r', '').replace('\n', '')
+    if clean_key:
+        genai.configure(api_key=clean_key)
+    return clean_key
+
+init_gemini()
 
 
 
@@ -163,8 +168,7 @@ def get_ai_doctor_response(input_data, source="report"):
     }}
     """
     try:
-        load_dotenv(override=True)
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+        init_gemini()
         model = genai.GenerativeModel('gemini-2.5-flash')
         if isinstance(input_data, Image.Image):
             response = model.generate_content([prompt, input_data])
@@ -190,8 +194,7 @@ def get_chat_response(patient_text):
     Keep response short (under 60 words). Sound empathetic but strict. Plain text only.
     """
     try:
-        load_dotenv(override=True)
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+        init_gemini()
         model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         return response.text.replace('*', '').strip()
@@ -207,67 +210,54 @@ def index():
 
 @app.route('/dashboard')
 def dashboard():
-    try:
-        # Latest report fetch karna
-        cursor.execute("SELECT * FROM medical_reports ORDER BY id DESC LIMIT 1")
-        report_data = cursor.fetchone()
-        
-        # Graphs ke liye Smartwatch data
-        cursor.execute("SELECT * FROM smartwatch_vitals ORDER BY id DESC LIMIT 15")
-        vitals = cursor.fetchall()
-        
-        # AI Summary string ko JSON mein wapas convert karna
-        ai_plan = None
-        if report_data and report_data.get('ai_summary'):
-            try:
-                summary = report_data['ai_summary']
-                ai_plan = summary if isinstance(summary, dict) else json.loads(summary)
-            except Exception as json_err:
-                print(f"JSON decode error: {json_err}")
-                ai_plan = None
+    # Latest report fetch karna
+    cursor.execute("SELECT * FROM medical_reports ORDER BY id DESC LIMIT 1")
+    report_data = cursor.fetchone()
+    
+    # Graphs ke liye Smartwatch data
+    cursor.execute("SELECT * FROM smartwatch_vitals ORDER BY id DESC LIMIT 15")
+    vitals = cursor.fetchall()
+    
+    # AI Summary string ko JSON mein wapas convert karna
+    ai_plan = None
+    if report_data:
+        ai_plan = json.loads(report_data['ai_summary'])
 
-        chart_data = {
-            "labels": [v['id'] for v in reversed(vitals)] if vitals else [],
-            "hr": [v['heart_rate'] for v in reversed(vitals)] if vitals else [],
-            "steps": [v['steps'] for v in reversed(vitals)] if vitals else []
-        }
+    chart_data = {
+        "labels": [v['id'] for v in reversed(vitals)],
+        "hr": [v['heart_rate'] for v in reversed(vitals)],
+        "steps": [v['steps'] for v in reversed(vitals)]
+    }
 
-        return render_template('dashboard.html', ai_plan=ai_plan, chart_data=chart_data)
-    except Exception as e:
-        print(f"Dashboard error: {e}")
-        return render_template('dashboard.html', ai_plan=None, chart_data={"labels": [], "hr": [], "steps": []})
+    return render_template('dashboard.html', ai_plan=ai_plan, chart_data=chart_data)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        try:
-            file = request.files.get('file')
-            if file and file.filename:
-                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-                file.save(path)
-                
-                # Load the image to pass directly to Gemini Vision
-                img = Image.open(path)
-                
-                # AI Doctor Logic -> Image is directly analyzed, no Tesseract needed.
-                ai_result = get_ai_doctor_response(img, "medical report image")
-                
-                if isinstance(ai_result, dict):
-                    cursor.execute("INSERT INTO medical_reports (user_name, extracted_text, ai_summary) VALUES (%s, %s, %s)",
-                                   ("Patient", "Direct Vision Analysis", json.dumps(ai_result)))
-                    db.commit()
-                    from flask import redirect, url_for
-                    return redirect(url_for('dashboard'))
-                else:
-                    error_msg = "Google API Limit Exceeded (429). Please wait 1 minute and try again." if "429" in str(ai_result) else f"Error: {ai_result}"
-                    return render_template('upload.html', error=error_msg)
+        file = request.files.get('file')
+        if file:
+            path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(path)
+            
+            # Load the image to pass directly to Gemini Vision
+            img = Image.open(path)
+            
+            # AI Doctor Logic -> Image is directly analyzed, no Tesseract needed.
+            ai_result = get_ai_doctor_response(img, "medical report image")
+            
+            if isinstance(ai_result, dict):
+                # "extracted_text" is no longer relevant, saving a marker instead
+                cursor.execute("INSERT INTO medical_reports (user_name, extracted_text, ai_summary) VALUES (%s, %s, %s)",
+                               ("Patient", "Direct Vision Analysis", json.dumps(ai_result)))
+                db.commit()
+                # Redirect to dashboard to see results
+                from flask import redirect, url_for
+                return redirect(url_for('dashboard'))
             else:
-                return render_template('upload.html', error="Please select a valid medical report file to upload.")
-        except Exception as e:
-            print(f"Upload error: {e}")
-            return render_template('upload.html', error=f"Upload processing error: {e}")
+                error_msg = "Google API Limit Exceeded (429). Please wait 1 minute and try again." if "429" in str(ai_result) else f"Error: {ai_result}"
+                return render_template('upload.html', error=error_msg)
               
+    # Agar sirf link open kiya hai (GET method), toh upload form dikhao
     return render_template('upload.html')
 
 @app.route('/daily-track')
@@ -326,8 +316,7 @@ def analyze_progress():
     Be natural, neutral, and friendly. Do NOT try to scare the patient. Respond in under 60 words. Plain text only, no markdown.
     """
     try:
-        load_dotenv(override=True)
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+        init_gemini()
         model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         feedback_text = response.text.strip().replace('*', '')
@@ -400,8 +389,7 @@ def report_chat():
         You CAN answer questions about their diagnosis, medicines, diet, exercise, and daily routine.
         Be friendly and empathetic. Explain medical terms simply. If the question is completely unrelated to their health, report, or routine, politely say you can only answer questions related to their medical profile. Keep the response plain text and under 60 words.
         """
-        load_dotenv(override=True)
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+        init_gemini()
         model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         chat_reply = response.text.replace('*', '').strip()
